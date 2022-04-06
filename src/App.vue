@@ -1,12 +1,49 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view/>
+    <v-app>
+      <!-- 버튼을 눌렀을 때 아래 router-view의 화면을 바꿀 수 있도록 -->
+      <v-app-bar app color="primary" dark>
+        <v-toolbar-title @click="$router.push('/')">blog</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <div v-if="login">
+          <v-btn outlined @click="$router.push('/board')">글 목록</v-btn>
+          <v-btn outlined @click="$router.push(`/user/${user}`)">{{user}}님의 정보</v-btn>
+          <v-btn @click="logOut">로그아웃</v-btn>
+        </div>
+        <v-btn v-else @click="$router.push('/login')">로그인</v-btn>
+      </v-app-bar>
+      
+      <v-main>
+        <!-- 라우터된 화면이 보이는 공간 -->
+        <router-view @login-user="showLogin" />
+      </v-main>
+      
+    </v-app>
+    
   </div>
 </template>
+
+<script>
+export default {
+  name:'App',
+  data: () => ({
+    user: '',
+    login: false,
+  }),
+  methods: {
+    showLogin: function(user){
+      this.user = user;
+      this.login = true;
+    },
+    logOut: function(){
+      this.user = '';
+      this.login = false;
+      //처음화면으로 돌아가기 위함
+      this.$router.push('/');
+    }
+  }
+}
+</script>
 
 <style>
 #app {
